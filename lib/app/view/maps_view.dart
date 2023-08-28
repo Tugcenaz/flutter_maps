@@ -58,13 +58,15 @@ class _MapsViewState extends State<MapsView> {
                 context: context,
                 builder: (context) {
                   return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 30),
-                      height: 150,
-                      child: Text(locationController.currentAddress));
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 30),
+                    height: 150,
+                    child: Obx(
+                      () => Text(locationController.currentAddress),
+                    ),
+                  );
                 });
           },
-          // infoWindow: const InfoWindow(title: "Konumum"),
           markerId: const MarkerId("my_position"),
           position: _initialCameraPosition.value.target,
           icon:
@@ -111,7 +113,10 @@ class _MapsViewState extends State<MapsView> {
   Future _changeTheLocation(LatLng latLong) async {
     setState(() {});
     final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newLatLng(latLong));
+    _initialCameraPosition.value = CameraPosition(target: latLong, zoom: 15);
+    await controller.animateCamera(
+        CameraUpdate.newCameraPosition(_initialCameraPosition.value));
+    await locationController.getAddressFromLatLng(latLong);
   }
 }
 

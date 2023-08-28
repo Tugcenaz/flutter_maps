@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationController extends GetxController {
   final RxString _currentAddress = ''.obs;
@@ -62,13 +63,14 @@ class LocationController extends GetxController {
         desiredAccuracy: LocationAccuracy.high);
 
     currentPosition = position;
-    await getAddressFromLatLng(currentPosition);
+    LatLng latLng=LatLng(currentPosition.latitude, currentPosition.longitude);
+    await getAddressFromLatLng(latLng);
     return currentPosition;
   }
 
-  Future<void> getAddressFromLatLng(Position position) async {
+  Future<void> getAddressFromLatLng(LatLng latlong) async {
     await placemarkFromCoordinates(
-            currentPosition.latitude, currentPosition.longitude)
+           latlong.latitude, latlong.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       currentAddress =
