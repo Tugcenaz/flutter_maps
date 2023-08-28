@@ -3,16 +3,25 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
-class LocationController extends GetxController{
-   final RxString _currentAddress=''.obs;
+class LocationController extends GetxController {
+  final RxString _currentAddress = ''.obs;
 
-   String get currentAddress => _currentAddress.value;
+  String get currentAddress => _currentAddress.value;
 
-   set currentAddress(String value) {
-     _currentAddress.value = value;
-   }
+  set currentAddress(String value) {
+    _currentAddress.value = value;
+  }
 
-   final Rx<Position> _currentPosition=Position(longitude: 0, latitude: 0, timestamp: DateTime(2023), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0).obs;
+  final Rx<Position> _currentPosition = Position(
+          longitude: 0,
+          latitude: 0,
+          timestamp: DateTime(2023),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0)
+      .obs;
 
   Position get currentPosition => _currentPosition.value;
 
@@ -52,22 +61,20 @@ class LocationController extends GetxController{
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
-    currentPosition=position;
+    currentPosition = position;
+    await getAddressFromLatLng(currentPosition);
     return currentPosition;
-
   }
 
   Future<void> getAddressFromLatLng(Position position) async {
     await placemarkFromCoordinates(
-        currentPosition.latitude, currentPosition.longitude)
+            currentPosition.latitude, currentPosition.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
-      currentAddress = '${place.street}, ${place.subLocality},${place.subAdministrativeArea}, ${place.postalCode}';
-
+      currentAddress =
+          '${place.street}, ${place.thoroughfare}, ${place.postalCode}, ${place.subAdministrativeArea}/${place.administrativeArea}';
     }).catchError((e) {
       debugPrint(e);
     });
   }
 }
-
-
