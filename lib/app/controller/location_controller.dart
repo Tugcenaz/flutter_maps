@@ -61,7 +61,6 @@ class LocationController extends GetxController {
   Future<Position> getCurrentPosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-
     currentPosition = position;
     LatLng latLng=LatLng(currentPosition.latitude, currentPosition.longitude);
     await getAddressFromLatLng(latLng);
