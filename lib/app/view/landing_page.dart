@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_maps/app/view/maps_view.dart';
-import 'package:flutter_maps/app/view/register_user/register_page.dart';
+import 'package:flutter_maps/app/view/register_user/sign_in_page.dart';
 import 'package:get/get.dart';
 import '../controller/user_controller.dart';
 
+
 class LandingPage extends StatelessWidget {
   LandingPage({Key? key}) : super(key: key);
-  UserController userController = Get.find();
+  final RxBool loading = false.obs;
   bool isInit = false;
-  RxBool loading = false.obs;
+  final UserController userController = Get.find();
 
   getUser() async {
     if (isInit == false) {
-      loading.value = true;
       isInit = true;
+      loading.value = true;
       await userController.currentUser();
       loading.value = false;
     }
@@ -24,13 +25,15 @@ class LandingPage extends StatelessWidget {
     getUser();
     debugPrint(
         "LANDING = current user ıd = ${userController.user.value.userId}");
+
     return Obx(() {
+      debugPrint("loading value = ${loading.value}");
       if (loading.value == true) {
         return const Center(
           child: CircularProgressIndicator(),
         );
       } else if (userController.user.value.userId == null) {
-        return RegisterPage();
+        return SignInPage();
       } else {
         return MapsView();
       }

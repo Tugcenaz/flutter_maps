@@ -25,68 +25,64 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-            padding:const EdgeInsets.symmetric(vertical: 150),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 38),
-                  child: Text(
-                    'Hesap oluştur',
-                  ),
-                ),
-                Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(40),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('E-mail'),
-                          ),
-                          onSaved: (String? val) {
-                            email = val;
-                          },
-                          validator: (String? value) {
-                            if (value != null) {
-                              bool isEmail = GetUtils.isEmail(value);
-                              if (isEmail == false) {
-                                return 'Geçersiz email';
-                              }
-                            }
-                            return null;
-                          },
-                        ),
-                        Obx(
-                          () => TextFormField(
-                            obscureText: isOnTap.value,
-                            onSaved: (String? val) {
-                              password = val;
-                            },
-                            validator: (String? value) {
-                              if (value!.length < 6) {
-                                return 'Şifre en az 6 karakter olmalı!';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              label: Text('Şifre'),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                _buildContainer(),
-              ],
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 38),
+            child: Text(
+              'Hesap oluştur',
             ),
           ),
+          Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      label: Text('E-mail'),
+                    ),
+                    onSaved: (String? val) {
+                      email = val;
+                    },
+                    validator: (String? value) {
+                      if (value != null) {
+                        bool isEmail = GetUtils.isEmail(value);
+                        if (isEmail == false) {
+                          return 'Geçersiz email';
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                  Obx(
+                    () => TextFormField(
+                      obscureText: isOnTap.value,
+                      onSaved: (String? val) {
+                        password = val;
+                      },
+                      validator: (String? value) {
+                        if (value!.length < 6) {
+                          return 'Şifre en az 6 karakter olmalı!';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        label: Text('Şifre'),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          _buildContainer(),
+        ],
+      ),
 
     );
   }

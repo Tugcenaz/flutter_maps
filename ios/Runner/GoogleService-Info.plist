@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>139872019854-9q09a4h4hkrkorgl1a87gm69sge4daik.apps.googleusercontent.com</string>
+	<string>700454921051-1b1t1br6dilmia99cpq9shnvthmsmtma.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.139872019854-9q09a4h4hkrkorgl1a87gm69sge4daik</string>
+	<string>com.googleusercontent.apps.700454921051-1b1t1br6dilmia99cpq9shnvthmsmtma</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCe5wGzLg1SF0It1sa6LcwWMzJpCG2qYhs</string>
+	<string>AIzaSyCM_Z7bo13qbzL7LfJoCU3bScbovtgeBs8</string>
 	<key>GCM_SENDER_ID</key>
-	<string>139872019854</string>
+	<string>700454921051</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.flutterMaps</string>
 	<key>PROJECT_ID</key>
-	<string>flutter-maps-7606b</string>
+	<string>flutter-maps-8648f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>flutter-maps-7606b.appspot.com</string>
+	<string>flutter-maps-8648f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:139872019854:ios:27bfba4311491a434370df</string>
+	<string>1:700454921051:ios:76ac2563c8fbfb5c8eb07e</string>
 </dict>
 </plist>

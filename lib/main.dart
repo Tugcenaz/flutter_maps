@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_maps/app/bindings/initial_bindings.dart';
 import 'package:flutter_maps/app/view/landing_page.dart';
 import 'package:flutter_maps/app/view/maps_view.dart';
@@ -10,6 +11,7 @@ import 'firebase_options.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   InitialBindings().dependencies();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           initialBinding: InitialBindings(),
           debugShowCheckedModeBanner: false,
-          home: MapsView(),
+          home: LandingPage(),
         );
       }
     );
