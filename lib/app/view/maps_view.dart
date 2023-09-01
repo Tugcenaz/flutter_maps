@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_maps/app/view/place_info_view.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../core/theme/text_styles.dart';
+import '../components/my_custom_button.dart';
 import '../controller/location_controller.dart';
 
 class MapsView extends StatefulWidget {
@@ -43,53 +46,96 @@ class _MapsViewState extends State<MapsView> {
     super.initState();
   }
 
-  Set<Marker> _createMarker() {
+  Set<Marker> createMarker() {
     return <Marker>{
       Marker(
           onTap: () async {
-            showModalBottomSheet(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              isScrollControlled: true,
-              useSafeArea: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                  height: 150,
-                  child: Obx(
-                    () => Column(
-                      children: [
-                        Text(locationController.currentAddress),
-                        IconButton(
-                          onPressed: () {
-                            Get.to(()=>PlaceInfoView());
-                          },
-                          icon: const Icon(Icons.save_alt_rounded),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
+            await modalBottomSheet();
           },
           markerId: const MarkerId("my_position"),
           position: _initialCameraPosition.value.target,
           icon:
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)),
-      Marker(
-          infoWindow: const InfoWindow(title: "Ulutek"),
-          markerId: const MarkerId("ulutek"),
-          position: const LatLng(40.2223549, 28.8586724),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose)),
     };
+  }
+
+  Future modalBottomSheet() async {
+    return await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.sp),
+          topRight: Radius.circular(30.sp),
+        ),
+      ),
+      isScrollControlled: true,
+      useSafeArea: true,
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: 180,
+          child: Obx(
+            () => Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.0.sp, vertical: 30.sp),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_rounded),
+                      Text(
+                        locationController.currentAddress,
+                        style: TextStyles.titleBlackTextStyle1(),
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12.h,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_outlined),
+                      Text(
+                        locationController.currentPosition.latitude.toString(),
+                        style: TextStyles.titleBlackTextStyle1(
+                            fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        ', ',
+                        style: TextStyles.titleBlackTextStyle1(
+                            fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        locationController.currentPosition.longitude.toString(),
+                        style: TextStyles.titleBlackTextStyle1(
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8.h,
+                  ),
+                  MyCustomButton(
+                    function: () {
+                      debugPrint('buton tıklandı');
+                      Get.to(() => PlaceInfoView());
+                    },
+                    icon: const Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.red,
+                    ),
+                    text: Text(
+                      'Kaydet',
+                      style: TextStyles.titleBlackTextStyle1(),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -104,7 +150,7 @@ class _MapsViewState extends State<MapsView> {
               initialCameraPosition: _initialCameraPosition.value,
               tiltGesturesEnabled: true,
               compassEnabled: true,
-              markers: _createMarker(),
+              markers: createMarker(),
               scrollGesturesEnabled: true,
               zoomGesturesEnabled: true,
               trafficEnabled: true,
