@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_maps/app/view/place_info_view.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../controller/location_controller.dart';
@@ -47,25 +48,36 @@ class _MapsViewState extends State<MapsView> {
       Marker(
           onTap: () async {
             showModalBottomSheet(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
-                isScrollControlled: true,
-                useSafeArea: true,
-                context: context,
-                builder: (context) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 30),
-                    height: 150,
-                    child: Obx(
-                      () => Text(locationController.currentAddress),
+              ),
+              isScrollControlled: true,
+              useSafeArea: true,
+              context: context,
+              builder: (context) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  height: 150,
+                  child: Obx(
+                    () => Column(
+                      children: [
+                        Text(locationController.currentAddress),
+                        IconButton(
+                          onPressed: () {
+                            Get.to(()=>PlaceInfoView());
+                          },
+                          icon: const Icon(Icons.save_alt_rounded),
+                        ),
+                      ],
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
           markerId: const MarkerId("my_position"),
           position: _initialCameraPosition.value.target,
@@ -98,7 +110,6 @@ class _MapsViewState extends State<MapsView> {
               trafficEnabled: true,
               onTap: (LatLng latLong) async {
                 await _changeTheLocation(latLong);
-                setState(() {});
               },
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
@@ -119,8 +130,3 @@ class _MapsViewState extends State<MapsView> {
     await locationController.getAddressFromLatLng(latLong);
   }
 }
-
-/* floatingActionButton: FloatingActionButton(
-          onPressed: _changeTheLocation(const LatLng(40.2222981, 28.8562524)),
-          child: const Icon(Icons.map_rounded),
-        )*/
