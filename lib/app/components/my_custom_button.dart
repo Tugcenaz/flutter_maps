@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyCustomButton extends StatelessWidget {
-  VoidCallback function;
-  Icon icon;
-  Widget text;
+  final VoidCallback function;
+  final Icon icon;
+  final Widget text;
 
-  MyCustomButton(
+  const MyCustomButton(
       {super.key,
       required this.function,
       required this.icon,
@@ -14,24 +14,22 @@ class MyCustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 110.w,
-      height: 35.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.sp),
-          color: Colors.white,
-          border: Border.all(color: Colors.black.withOpacity(0.2))),
-      child: Row(
-        children: [
-          IconButton(
-            iconSize: 24.sp,
-            onPressed: () {
-              function();
-            },
-            icon: icon,
-          ),
-          text,
-        ],
+    return GestureDetector(onTap: (){
+      function();
+    },
+      child: Container(
+        width: 110.w,
+        height: 35.h,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.sp),
+            color: Colors.white,
+            border: Border.all(color: Colors.black.withOpacity(0.2))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            icon,
+            text,
+          ],
+        ),
       ),
     );
   }
