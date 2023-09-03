@@ -39,4 +39,9 @@ class UserController extends GetxController {
     debugPrint('user: ${user.value.toString()}');
   }
 
+  signOut() async {
+   await authService.signOut();
+   currentUser();
+  }
+
 }
