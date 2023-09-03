@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_maps/app/controller/user_controller.dart';
 import 'package:flutter_maps/app/view/place_info_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class _MapsViewState extends State<MapsView> {
       Completer<GoogleMapController>();
   GoogleMapController? googleMapController;
   LocationController locationController = Get.find();
+  UserController userController = Get.find();
 
   Future<void> _getLocation() async {
     bool result = await locationController.handleLocationPermission();
@@ -117,11 +119,11 @@ class _MapsViewState extends State<MapsView> {
                   ),
                   MyCustomButton(
                     function: () {
-                      debugPrint('buton tıklandı');
                       Get.to(() => PlaceInfoView());
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.favorite_rounded,
+                      size: 24.sp,
                       color: Colors.red,
                     ),
                     text: Text(
@@ -141,6 +143,17 @@ class _MapsViewState extends State<MapsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xff7EACD7),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app_sharp),
+            onPressed: () {
+              userController.signOut();
+            },
+          )
+        ],
+      ),
       body: Obx(
         () => Stack(
           children: [
