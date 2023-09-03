@@ -19,6 +19,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       debugPrint('firebase auth exception: $e');
     }
+    return null;
   }
 
   Future<String?> currentUser() async {
@@ -28,5 +29,13 @@ class AuthService {
     } else {
       return null;
     }
+  }
+
+  Future<void> signOut() async {
+    await firebaseAuth.signOut();
+  }
+
+  Future<void> deleteFirebaseUser() async {
+    await firebaseAuth.currentUser?.delete();
   }
 }
