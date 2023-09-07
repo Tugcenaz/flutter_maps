@@ -13,9 +13,17 @@ class TextStyles {
 
   static TextStyle titleBlackTextStyle1(
       {Color? color, FontWeight? fontWeight, double? fontSize}) {
-    return GoogleFonts.alike(
+    return GoogleFonts.roboto(
         color: color ?? Colors.black,
         fontSize: fontSize ?? 14.sp,
         fontWeight: fontWeight ?? FontWeight.w500);
+  }
+
+  static TextStyle titleBlackTextStyle2(
+      {Color? color, FontWeight? fontWeight, double? fontSize}) {
+    return GoogleFonts.roboto(
+        color: color ?? Colors.black,
+        fontSize: fontSize ?? 16.sp,
+        fontWeight: fontWeight ?? FontWeight.w400);
   }
 }
