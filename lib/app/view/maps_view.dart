@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_maps/app/controller/user_controller.dart';
-import 'package:flutter_maps/app/view/place_info_view.dart';
+import 'package:flutter_maps/app/view/location_detail_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -78,13 +78,13 @@ class _MapsViewState extends State<MapsView> {
           child: Obx(
             () => Padding(
               padding:
-                  EdgeInsets.symmetric(horizontal: 16.0.sp, vertical: 30.sp),
+                  EdgeInsets.symmetric(horizontal: 12.0.sp, vertical: 30.sp),
               child: Column(
                 children: [
                   Row(
                     children: [
                       const Icon(Icons.location_on_rounded),
-                      Text(
+                      Text(overflow:TextOverflow.clip,
                         locationController.currentAddress,
                         style: TextStyles.titleBlackTextStyle1(),
                         maxLines: 2,
@@ -119,7 +119,7 @@ class _MapsViewState extends State<MapsView> {
                   ),
                   MyCustomButton(
                     function: () {
-                      Get.to(() => PlaceInfoView());
+                      Get.to(() => LocationDetailView());
                     },
                     icon: Icon(
                       Icons.favorite_rounded,
