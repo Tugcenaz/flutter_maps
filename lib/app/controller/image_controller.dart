@@ -18,9 +18,9 @@ class ImageController extends GetxController{
 
   Future pickImageFromCamera() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (image == null) return;
-      final imageTemp = File(image.path);
+      File imageTemp = File(image.path);
       imageFile?.value = imageTemp;
     } catch (e) {
       debugPrint('failed to pick image from camera : $e');
