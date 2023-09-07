@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationController extends GetxController {
   final RxString _currentAddress = ''.obs;
+  final Rx<LatLng> onTapLoc = const LatLng(0, 0).obs;
+  RxSet<Marker> markers = <Marker>{}.obs;
 
   String get currentAddress => _currentAddress.value;
 
@@ -62,14 +64,13 @@ class LocationController extends GetxController {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
-    LatLng latLng=LatLng(currentPosition.latitude, currentPosition.longitude);
+    LatLng latLng = LatLng(currentPosition.latitude, currentPosition.longitude);
     await getAddressFromLatLng(latLng);
     return currentPosition;
   }
 
   Future<void> getAddressFromLatLng(LatLng latlong) async {
-    await placemarkFromCoordinates(
-           latlong.latitude, latlong.longitude)
+    await placemarkFromCoordinates(latlong.latitude, latlong.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       currentAddress =
@@ -77,5 +78,10 @@ class LocationController extends GetxController {
     }).catchError((e) {
       debugPrint(e);
     });
+  }
+
+  createMarker(MarkerId markerId, LatLng position, BitmapDescriptor icon) {
+    var marker=Marker(markerId: markerId, position: position, icon: icon);
+    markers.value.add(marker);
   }
 }

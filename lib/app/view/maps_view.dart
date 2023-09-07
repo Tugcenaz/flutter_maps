@@ -44,12 +44,13 @@ class _MapsViewState extends State<MapsView> {
       googleMapController = await _controller.future;
       await googleMapController?.animateCamera(
           CameraUpdate.newCameraPosition(_initialCameraPosition.value));
+
     });
     super.initState();
   }
 
   Set<Marker> createMarker() {
-    return <Marker>{
+    return {
       Marker(
           onTap: () async {
             await modalBottomSheet();
@@ -57,7 +58,7 @@ class _MapsViewState extends State<MapsView> {
           markerId: const MarkerId("my_position"),
           position: _initialCameraPosition.value.target,
           icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)),
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)),
     };
   }
 
@@ -84,7 +85,8 @@ class _MapsViewState extends State<MapsView> {
                   Row(
                     children: [
                       const Icon(Icons.location_on_rounded),
-                      Text(overflow:TextOverflow.clip,
+                      Text(
+                        overflow: TextOverflow.clip,
                         locationController.currentAddress,
                         style: TextStyles.titleBlackTextStyle1(),
                         maxLines: 2,
@@ -163,12 +165,14 @@ class _MapsViewState extends State<MapsView> {
               initialCameraPosition: _initialCameraPosition.value,
               tiltGesturesEnabled: true,
               compassEnabled: true,
-              markers: createMarker(),
+              markers:createMarker(),
               scrollGesturesEnabled: true,
               zoomGesturesEnabled: true,
               trafficEnabled: true,
               onTap: (LatLng latLong) async {
                 await _changeTheLocation(latLong);
+                setState(() {});
+                locationController.onTapLoc.value = latLong;
               },
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
@@ -181,7 +185,9 @@ class _MapsViewState extends State<MapsView> {
   }
 
   Future _changeTheLocation(LatLng latLong) async {
-    setState(() {});
+    setState(() {
+
+    });
     final GoogleMapController controller = await _controller.future;
     _initialCameraPosition.value = CameraPosition(target: latLong, zoom: 15);
     await controller.animateCamera(

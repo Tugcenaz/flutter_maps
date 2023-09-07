@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_maps/app/components/cached_image_widget.dart';
+import 'package:flutter_maps/app/components/my_custom_button.dart';
 import 'package:flutter_maps/app/controller/image_controller.dart';
 import 'package:flutter_maps/app/controller/location_controller.dart';
+import 'package:flutter_maps/app/controller/place_to_visit_controller.dart';
 import 'package:flutter_maps/app/controller/storage_controller.dart';
+import 'package:flutter_maps/app/controller/user_controller.dart';
+import 'package:flutter_maps/app/models/place_to_visit_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMaps;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:lottie/lottie.dart';
 
 import '../../core/constants/image_constants.dart';
@@ -15,20 +22,83 @@ import '../../core/theme/text_styles.dart';
 class LocationDetailView extends StatelessWidget {
   LocationDetailView({super.key});
 
+  String? description = '';
   final LocationController locationController = Get.find();
   final ImageController imageController = Get.find();
   final StorageController storageController = Get.find();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  PlaceToVisitController placeToVisitController = Get.find();
+  UserController userController = Get.find();
+
+  createMarker() {
+    locationController.createMarker(
+        MarkerId('${userController.user.value.userId}'),
+        locationController.onTapLoc.value,
+        BitmapDescriptor.defaultMarker);
+  }
+
+  savePlace() async {
+    var placeModel = PlaceToVisitModel(
+        userId: userController.user.value.userId ?? '',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        lat: locationController.onTapLoc.value.latitude,
+        long: locationController.onTapLoc.value.longitude,
+        description: description ?? '',
+        imageUrl: storageController.imageUrl.value);
+    await placeToVisitController.savePlaceInfo(placeModel);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 60.0.h),
+        padding: EdgeInsets.symmetric(vertical: 60.0.h, horizontal: 34.w),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             locationPicWidget(context),
+            SizedBox(height: 8.h),
+            buildForm(),
+            MyCustomButton(
+                width: 200.w,
+                height: 50.h,
+                function: () {
+                  savePlace();
+                  createMarker();
+                  Get.back();
+                },
+                icon: const Icon(
+                  Icons.save,
+                  color: Colors.purple,
+                ),
+                text: Text(
+                  'Bu konumu kaydet',
+                  style: TextStyles.titleBlackTextStyle1(),
+                )),
           ],
         ),
+      ),
+    );
+  }
+
+  Form buildForm() {
+    return Form(
+      key: formKey,
+      child: TextFormField(
+        maxLines: 2,
+        maxLength: 150,
+        onChanged: (String? value) {
+          if (value != null) {
+            description = value;
+            debugPrint(description);
+          }
+        },
+        decoration: InputDecoration(
+            hintText: 'Konumla ilgili açıklama ekle',
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(26.sp),
+                borderSide: BorderSide(color: Colors.black.withOpacity(0.2)))),
       ),
     );
   }
@@ -43,7 +113,7 @@ class LocationDetailView extends StatelessWidget {
                     height: 150.h,
                     child: SvgPicture.asset(ImageConstants.placeHolder))
                 : SizedBox(
-                    height: 250.h,
+                    height: 280.h,
                     child: CachedImageWidget(
                       imageUrl: storageController.imageUrl.value,
                     ),
@@ -58,13 +128,13 @@ class LocationDetailView extends StatelessWidget {
             },
             child: Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width - 55,
-              height: 35.h,
+              //width: MediaQuery.of(context).size.width - 55,
+              height: 38.h,
               decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.black.withOpacity(0.2),
                   ),
-                  borderRadius: BorderRadius.circular(26.sp)),
+                  borderRadius: BorderRadius.circular(18.sp)),
               child: Text(
                 'Bu konum için bir fotoğraf ekle',
                 style: TextStyles.titleBlackTextStyle2(),
