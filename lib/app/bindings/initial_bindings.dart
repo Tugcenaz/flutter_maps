@@ -1,5 +1,6 @@
 import 'package:flutter_maps/app/controller/image_controller.dart';
 import 'package:flutter_maps/app/controller/location_controller.dart';
+import 'package:flutter_maps/app/controller/storage_controller.dart';
 import 'package:flutter_maps/app/services/auth_service.dart';
 import 'package:flutter_maps/app/services/db_service.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut(() => LocationController(), fenix: true);
     Get.lazyPut(() => ImageController(), fenix: true);
     Get.lazyPut(() => UserController(), fenix: true);
+    Get.lazyPut(() => StorageController(), fenix: true);
 
     //Services
     Get.lazyPut(() => AuthService(), fenix: true);
