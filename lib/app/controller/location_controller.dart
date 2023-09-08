@@ -79,9 +79,4 @@ class LocationController extends GetxController {
       debugPrint(e);
     });
   }
-
-  createMarker(MarkerId markerId, LatLng position, BitmapDescriptor icon) {
-    var marker=Marker(markerId: markerId, position: position, icon: icon);
-    markers.value.add(marker);
-  }
 }
