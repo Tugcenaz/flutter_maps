@@ -189,9 +189,9 @@ class _MapsViewState extends State<MapsView> {
                     height: 8.h,
                   ),
                   MyCustomButton(
-                    function: () {
+                    function: ()async{
                       Get.back();
-                      Get.to(() => LocationDetailView());
+                      var data = await Get.to(() => LocationDetailView());
                     },
                     icon: Icon(
                       Icons.favorite_rounded,

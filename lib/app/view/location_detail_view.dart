@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMaps;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
