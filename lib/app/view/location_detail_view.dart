@@ -15,6 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMaps;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/constants/image_constants.dart';
 import '../../core/theme/text_styles.dart';
@@ -38,12 +39,14 @@ class LocationDetailView extends StatelessWidget {
   }
 
   savePlace() async {
+    var uuid = Uuid();
     var placeModel = PlaceToVisitModel(
         userId: userController.user.value.userId ?? '',
         createdAt: DateTime.now().millisecondsSinceEpoch,
         lat: locationController.onTapLoc.value.latitude,
         long: locationController.onTapLoc.value.longitude,
         description: description ?? '',
+        placeId: uuid.v4(),
         imageUrl: storageController.imageUrl.value);
     await placeToVisitController.savePlaceInfo(placeModel);
   }
@@ -51,32 +54,33 @@ class LocationDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 60.0.h, horizontal: 34.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            locationPicWidget(context),
-            SizedBox(height: 8.h),
-            buildForm(),
-            MyCustomButton(
-                width: 200.w,
-                height: 50.h,
-                function: () {
-                  savePlace();
-                  createMarker();
-                  Get.back();
-                },
-                icon: const Icon(
-                  Icons.save,
-                  color: Colors.purple,
-                ),
-                text: Text(
-                  'Bu konumu kaydet',
-                  style: TextStyles.titleBlackTextStyle1(),
-                )),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 60.0.h, horizontal: 34.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              locationPicWidget(context),
+              SizedBox(height: 8.h),
+              buildForm(),
+              MyCustomButton(
+                  width: 200.w,
+                  height: 50.h,
+                  function: () {
+                    savePlace();
+                    createMarker();
+                    Get.back();
+                  },
+                  icon: const Icon(
+                    Icons.save,
+                    color: Colors.purple,
+                  ),
+                  text: Text(
+                    'Bu konumu kaydet',
+                    style: TextStyles.titleBlackTextStyle1(),
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -174,6 +178,7 @@ class LocationDetailView extends StatelessWidget {
       children: [
         cameraGalleryRowWidget(
             onTap: () async {
+              Get.back();
               await imageController.pickImageFromCamera();
               if (imageController.imageFile?.value != null) {
                 storageController.uploadMedia(imageController.imageFile!.value);
@@ -189,6 +194,7 @@ class LocationDetailView extends StatelessWidget {
         ),
         cameraGalleryRowWidget(
           onTap: () async {
+            Get.back();
             await imageController.pickImageFromGallery();
             if (imageController.imageFile?.value != null) {
               storageController.uploadMedia(imageController.imageFile!.value);

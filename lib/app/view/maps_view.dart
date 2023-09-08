@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_maps/app/controller/place_to_visit_controller.dart';
 import 'package:flutter_maps/app/controller/user_controller.dart';
+import 'package:flutter_maps/app/models/place_to_visit_model.dart';
 import 'package:flutter_maps/app/view/location_detail_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -20,13 +23,69 @@ class _MapsViewState extends State<MapsView> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   GoogleMapController? googleMapController;
-  LocationController locationController = Get.find();
-  UserController userController = Get.find();
+  final LocationController locationController = Get.find();
+  final UserController userController = Get.find();
+  final PlaceToVisitController placeToVisitController = Get.find();
 
   Future<void> _getLocation() async {
     bool result = await locationController.handleLocationPermission();
     if (result) {
       await locationController.getCurrentPosition();
+    }
+  }
+
+  showArchiveDialog() async {
+    List<PlaceToVisitModel>? placeList =
+        await placeToVisitController.getSavedPlace();
+    if ((placeList ?? []).isNotEmpty) {
+      return await showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.sp),
+            topRight: Radius.circular(30.sp),
+          ),
+        ),
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: Get.context!,
+        builder: (context) {
+          return SizedBox(
+            height: Get.height*.4,
+            child: ListView.builder(
+              itemBuilder: (_, int index) {
+                PlaceToVisitModel placeToVisitModel = placeList![index];
+                return ListTile(
+                  onTap: (){
+                    Get.back();
+                    goToLocation(LatLng(placeToVisitModel.lat, placeToVisitModel.long));
+                  },
+                    trailing: IconButton(icon: const Icon(Icons.delete,color: Colors.red,),onPressed: (){
+                      Get.back();
+                      placeToVisitController.deletePlaceInfo(placeToVisitModel.placeId);
+                    },),
+                    leading: CircleAvatar(
+                      child: placeToVisitModel.imageUrl.isEmpty?SizedBox():CachedNetworkImage(
+                        imageUrl: placeToVisitModel.imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                        placeholder: (context, url) => CircularProgressIndicator(),
+                      ),
+                    ),
+                    title: Text(placeToVisitModel.description));
+              },
+              itemCount: placeList?.length,
+            ),
+          );
+        },
+      );
+    } else {
+      Get.snackbar("Hata", "Kaydedilmiş yer yok!");
     }
   }
 
@@ -44,7 +103,6 @@ class _MapsViewState extends State<MapsView> {
       googleMapController = await _controller.future;
       await googleMapController?.animateCamera(
           CameraUpdate.newCameraPosition(_initialCameraPosition.value));
-
     });
     super.initState();
   }
@@ -58,7 +116,7 @@ class _MapsViewState extends State<MapsView> {
           markerId: const MarkerId("my_position"),
           position: _initialCameraPosition.value.target,
           icon:
-          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)),
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)),
     };
   }
 
@@ -121,6 +179,7 @@ class _MapsViewState extends State<MapsView> {
                   ),
                   MyCustomButton(
                     function: () {
+                      Get.back();
                       Get.to(() => LocationDetailView());
                     },
                     icon: Icon(
@@ -149,6 +208,12 @@ class _MapsViewState extends State<MapsView> {
         backgroundColor: const Color(0xff7EACD7),
         actions: [
           IconButton(
+            icon: const Icon(Icons.archive),
+            onPressed: () {
+              showArchiveDialog();
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.exit_to_app_sharp),
             onPressed: () {
               userController.signOut();
@@ -165,14 +230,12 @@ class _MapsViewState extends State<MapsView> {
               initialCameraPosition: _initialCameraPosition.value,
               tiltGesturesEnabled: true,
               compassEnabled: true,
-              markers:createMarker(),
+              markers: createMarker(),
               scrollGesturesEnabled: true,
               zoomGesturesEnabled: true,
               trafficEnabled: true,
               onTap: (LatLng latLong) async {
-                await _changeTheLocation(latLong);
-                setState(() {});
-                locationController.onTapLoc.value = latLong;
+                goToLocation(latLong);
               },
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
@@ -184,10 +247,14 @@ class _MapsViewState extends State<MapsView> {
     );
   }
 
-  Future _changeTheLocation(LatLng latLong) async {
-    setState(() {
+  goToLocation(LatLng latLong) async {
+    await _changeTheLocation(latLong);
+    setState(() {});
+    locationController.onTapLoc.value = latLong;
+  }
 
-    });
+  Future _changeTheLocation(LatLng latLong) async {
+    setState(() {});
     final GoogleMapController controller = await _controller.future;
     _initialCameraPosition.value = CameraPosition(target: latLong, zoom: 15);
     await controller.animateCamera(
