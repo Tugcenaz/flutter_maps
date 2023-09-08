@@ -12,7 +12,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMaps;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
@@ -30,13 +29,6 @@ class LocationDetailView extends StatelessWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   PlaceToVisitController placeToVisitController = Get.find();
   UserController userController = Get.find();
-
-  createMarker() {
-    locationController.createMarker(
-        MarkerId('${userController.user.value.userId}'),
-        locationController.onTapLoc.value,
-        BitmapDescriptor.defaultMarker);
-  }
 
   savePlace() async {
     var uuid = Uuid();
@@ -68,7 +60,6 @@ class LocationDetailView extends StatelessWidget {
                   height: 50.h,
                   function: () {
                     savePlace();
-                    createMarker();
                     Get.back();
                   },
                   icon: const Icon(

@@ -50,32 +50,43 @@ class _MapsViewState extends State<MapsView> {
         context: Get.context!,
         builder: (context) {
           return SizedBox(
-            height: Get.height*.4,
+            height: Get.height * .4,
             child: ListView.builder(
               itemBuilder: (_, int index) {
                 PlaceToVisitModel placeToVisitModel = placeList![index];
                 return ListTile(
-                  onTap: (){
-                    Get.back();
-                    goToLocation(LatLng(placeToVisitModel.lat, placeToVisitModel.long));
-                  },
-                    trailing: IconButton(icon: const Icon(Icons.delete,color: Colors.red,),onPressed: (){
+                    onTap: () {
                       Get.back();
-                      placeToVisitController.deletePlaceInfo(placeToVisitModel.placeId);
-                    },),
-                    leading: CircleAvatar(
-                      child: placeToVisitModel.imageUrl.isEmpty?SizedBox():CachedNetworkImage(
-                        imageUrl: placeToVisitModel.imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        placeholder: (context, url) => CircularProgressIndicator(),
+                      goToLocation(LatLng(
+                          placeToVisitModel.lat, placeToVisitModel.long));
+                    },
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
+                      onPressed: () {
+                        Get.back();
+                        placeToVisitController
+                            .deletePlaceInfo(placeToVisitModel.placeId);
+                      },
+                    ),
+                    leading: CircleAvatar(
+                      child: placeToVisitModel.imageUrl.isEmpty
+                          ? SizedBox()
+                          : CachedNetworkImage(
+                              imageUrl: placeToVisitModel.imageUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
+                              ),
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                            ),
                     ),
                     title: Text(placeToVisitModel.description));
               },
