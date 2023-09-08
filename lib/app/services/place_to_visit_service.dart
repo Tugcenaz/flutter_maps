@@ -10,9 +10,7 @@ class PlaceToVisitService {
 
   Future<bool> savePlaceInfo(PlaceToVisitModel placeToVisitModel) async {
     try {
-      debugPrint("toMap = ${placeToVisitModel.toMap()}");
-      var resut = await firestore.collection("place").add(placeToVisitModel.toMap());
-      debugPrint("result = ${resut}");
+       await firestore.collection("place").add(placeToVisitModel.toMap());
       return true;
     } on Exception catch (e) {
       debugPrint(" error = $e");
@@ -20,17 +18,33 @@ class PlaceToVisitService {
     }
   }
 
-  Future<PlaceToVisitModel?> getSavedPlace(String userId) async {
+  Future<bool> deletePlaceInfo(String placeId) async {
+    try {
+      var result = await firestore.collection("place").where("placeId",isEqualTo: placeId).get();
+      if(result.docs.isNotEmpty){
+        await firestore.collection("place").doc(result.docs.first.id).delete();
+      }
+      return true;
+    } on Exception catch (e) {
+      debugPrint(" error = $e");
+      return false;
+    }
+  }
+
+  Future<List<PlaceToVisitModel>?> getSavedPlace(String userId) async {
     try {
       var savedPlace = await firestore
-          .collection("place_info")
+          .collection("place")
           .where('userId', isEqualTo: userId)
-          .limit(1)
+          .limit(50)
           .get();
       if (savedPlace.docs.isNotEmpty) {
-        PlaceToVisitModel placeToVisitModel =
-            PlaceToVisitModel.fromMap(savedPlace.docs.first.data());
-        return placeToVisitModel;
+        List<PlaceToVisitModel> placeList = [];
+        for(var item in savedPlace.docs){
+          PlaceToVisitModel placeToVisitModel = PlaceToVisitModel.fromMap(item.data());
+          placeList.add(placeToVisitModel);
+        }
+        return placeList;
       }
     } catch (e) {
       debugPrint(e.toString());
