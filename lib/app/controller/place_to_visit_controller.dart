@@ -11,9 +11,11 @@ class PlaceToVisitController extends GetxController {
     await placeToVisitService.savePlaceInfo(placeToVisitModel);
   }
 
-  getSavedPlace() async {
-    await userController.currentUser();
-    PlaceToVisitModel? placeModel = await placeToVisitService
-        .getSavedPlace(userController.user.value.userId ?? '');
+  Future<void> deletePlaceInfo(String placeId) async {
+    await placeToVisitService.deletePlaceInfo(placeId);
+  }
+
+  Future<List<PlaceToVisitModel>?>getSavedPlace() async {
+    return await placeToVisitService.getSavedPlace(userController.user.value.userId??"");
   }
 }
